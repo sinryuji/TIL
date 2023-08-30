@@ -86,7 +86,8 @@
 %style{%d{UTF-8}}{white} %highlight{%-5level} %style{%pid}{magenta} --- [%style{%t}{bright,blue}] %style{%c{1.}}{cyan}: %msg%n%throwable
 ```
 
-![[Pasted image 20230830173643.png]]
+![](https://i.imgur.com/LuOHYXu.png)
+
 
 `Layout`을 설정한대로 로그를 출력한 결과이다. 날짜 포맷 , 색깔, 출력 요소등을 정할 수 있다. C언어의 printf 처럼 Format 문자를 사용한다. 문법은 다음과 같다.
 
@@ -164,7 +165,7 @@
 
 `DefaultRolloverStrategy`는 `datetime` 패턴과 파일 패턴의 int값을 받아서 결정됩니다. `datetime`은 현재 시간으로 대체되고, 파일 패턴 숫자는 DB의 `autoincrement`처럼 `rollover` 마다 1씩 증가합니다. 예제의 filePattern을 보시면 `%d{yyyy-MM-dd}` 가 날짜 패턴, `%i`가 파일패턴의 int입니다. 각각 `rollover` 이후에는 다음과 같이 저장됩니다.
 
-![[Pasted image 20230830180205.png]]
+![](https://i.imgur.com/7vm7gOV.png)
 
 해당 `Strategy`에는 다음 속성을 부여할 수 있다.
 

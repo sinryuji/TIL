@@ -45,4 +45,4 @@ public class TeamService {
 
 ```
 실제 코드에 `Slf4j`를 사용해 본 모습이다. 로그가 찍히는 모습이 다음과 같다.
-![[Pasted image 20230828145656.png]]
+![](https://i.imgur.com/h1FxXxN.png)

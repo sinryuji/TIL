@@ -331,8 +331,6 @@ commit이 된 후 시점이다. commit이 되면서 ActionQueue에 저장된 쿼
 
 지금까지 계속 JPA 트랜잭션이 commit된 시점에 DB에 쿼리가 요청된다고 설명을 하였는데 이는 이해를 쉽게 하기 위해 조금 생략된 설명이고, 더 정확히 설명을 하자면 **commit이 되면 EntityManager가 내부적으로 `flush()`란 함수를 호출하며, 이를 통해 쿼리가 쿼리가 요청이 되는 것**이다.
 
-즉, 우리는 commit을 하지 않아도, 그러니까 트랜잭션을 마치지 않아도 중간에 `flush()`를 호출하여 변경 사항을 DB에 적용을 시킬 수 있는 것이다. 물론 실제 개발 환경에서는 거의 사용되지 않고 테스트 환경에서만 많이 사용되는 방법이지만 분명히 알아둬야하는 부분이다.
-
 다음 코드를 보자.
 
 ```java
@@ -375,6 +373,21 @@ void test7() {
 ![](https://velog.velcdn.com/images/sinryuji/post/cff42c8f-43ab-436d-98a8-6ab0289dae78/image.png)
 
 원래라면 트랜잭션 commit 전과 후 사이에 쿼리가 날아가야 하는데 그 전에 쿼리가 날아갔다. `flush()`가 호출되는 시점에 ActionQueue를 모두 비우며 쿼리를 요청하는 것을 확인할 수 있다.
+
+디버깅 모드로 ActionQueue가 비워지는 것도 확인해보자.
+
+![](https://velog.velcdn.com/images/sinryuji/post/cfcf2db0-afd4-4494-b781-43aed8b925a2/image.png)
+
+`flush()`를 호출하기 전에는 ActionQueue에 Insert 쿼리가 하나 존재한다. 이 때 `flush()`를 호출하면?
+
+![](https://velog.velcdn.com/images/sinryuji/post/1cc51693-13fe-4aee-b943-a3a4193a039f/image.png)
+
+ActionQueue가 비워진 것을 확인할 수 있다.
+
+여기서 주의해야 할 점은 Insert 쿼리는 날아갔지만 실제로 DB에 적용된 건 아니라는 것이다! 즉, **flush()는 변경 사항을 바로 DB에 반영 시키는게 아니라 DB에 동기화만 시키는 것**이다. 반영까지 시키려면 Jpa 트랜잭션이 commit 되어야 한다!
+
+자세한 동작은 flush() 호출 -> DB에 쿼리 전송 -> DB 트랜잭션 로그에 기록 -> commit() 호출 -> 트랜잭션 로그 내용을 DB에 반영의 순서로 이루어지게 된다.
+
 
 ## 변경 감지(Dirty Checking)
 
